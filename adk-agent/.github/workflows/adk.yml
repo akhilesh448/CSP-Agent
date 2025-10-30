@@ -1,0 +1,40 @@
+name: Adk Agent
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches: ["main"]
+
+jobs:
+  zip-adk-agent:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - uses: montudor/action-zip@v1
+        name: Zip the build
+        with:
+          args: zip -r csp-agent-${{ github.run_number }}.zip csp_agent
+      - run: mkdir zipbuild
+      - run: mv csp-agent-${{ github.run_number }}.zip zipbuild
+
+      # - uses: shallwefootball/s3-upload-action@master
+      #   name: Upload S3
+      #   id: S3
+      #   with:
+      #     aws_key_id: ${{ secrets.AWS_KEY_ID }}
+      #     aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
+      #     aws_bucket: ${{ vars.AWS_BUCKET }}
+      #     source_dir: "zipbuild"
+      #     destination_dir: "csp-agent"
+      # - run: rm -rf csp-agent-${{ github.run_number }}
+      # - run: rm -rf zipbuild
+
+      - name: Upload ZIP as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: csp-agent-${{ github.run_number }}
+          path: zipbuild/csp-agent-${{ github.run_number }}.zip
