@@ -1,6 +1,6 @@
 # CSP Agent
 
-This is a Python-based CSP Agent designed to interact with external systems via APIs.
+This is a Python-based Customer Service Portal Agent designed to interact with external systems via APIs.
 
 ## Setup Instructions
 
